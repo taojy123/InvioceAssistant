@@ -36,7 +36,7 @@ for s in ss:
         a6 = re.findall(r"收款人名称：(.*?)币种", s)[0].strip()
         a7 = re.findall(r"收款人账号：(.*?)收款人", s)[0].strip()
         a8 = re.findall(r"摘要：(.*?)票据日期", s)[0].strip() + re.findall(r"附言：(.*?)摘要", s)[0].strip()
-        a9 = re.findall(r"金额：(.*?)金额大写", s)[0].replace(",", "").replace("，", "").strip()
+        a9 = re.findall(r"金额：(.*?)金额大写", s)[0].replace(",", "").replace("，", "").replace("一", "").replace("—", "").replace("_", ".").strip()
         a1 = a1.replace("年", ",").replace("月", ",").replace("日", ",")
         a1 = a1.split(",")
         a10 = a1[0].strip()
