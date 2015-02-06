@@ -2,7 +2,15 @@
 
 import re
 import os
+import traceback
 
+def refind(reg, s):
+    r = re.findall(reg, s)
+    if r:
+        return r[0].strip()
+    else:
+        return ""
+    
 
 raw_input("请将需要处理的 txt 文件放置于input目录中, 按下回车键开始自动处理..")
 print "注意:测试版本入账日期最后一位以 * 号隐藏"
@@ -28,14 +36,20 @@ for s in ss:
     s0 = s
     try:
         s = s.replace("\n", " ").replace("\r", " ").replace(":", "：").replace(" ", "")
+        s = s.replace(".?", "：").replace("=", "：")
         a1 = re.findall(r"入账日期：(.*?)会计流水", s)[0].strip()
-        a2 = re.findall(r"发报行号：(.*?)收款人账号", s)[0].strip()
-        a3 = re.findall(r"发报行名：(.*?)发报行号", s)[0].strip()
-        a4 = re.findall(r"付款人名称：(.*?)报文编号", s)[0].strip()
+        a2 = refind(r"发报行号：(.*?)收款人账号", s)
+        if not a2:
+            a2 = re.findall(r"发报行号：(.*?)销账编号", s)[0].strip()
+            a3 = re.findall(r"发报行名：(.*?)收款人账号", s)[0].strip()
+            a4 = re.findall(r"付款人名称：(.*?)发报行名", s)[0].strip()
+        else:
+            a3 = re.findall(r"发报行名：(.*?)发报行号", s)[0].strip()
+            a4 = re.findall(r"付款人名称：(.*?)报文编号", s)[0].strip()
         a5 = re.findall(r"付款人账号：(.*?)付款人地址", s)[0].strip()
         a6 = re.findall(r"收款人名称：(.*?)币种", s)[0].strip()
         a7 = re.findall(r"收款人账号：(.*?)收款人", s)[0].strip()
-        a8 = re.findall(r"摘要：(.*?)票据日期", s)[0].strip() + re.findall(r"附言：(.*?)摘要", s)[0].strip()
+        a8 = refind(r"摘要：(.*?)票据日期", s) + refind(r"附言：(.*?)摘要", s)
         a9 = re.findall(r"金额：(.*?)金额大写", s)[0].replace(",", "").replace("，", "").replace("一", "").replace("—", "").replace("_", ".").strip()
         a1 = a1.replace("年", ",").replace("月", ",").replace("日", ",")
         a1 = a1.split(",")
@@ -51,10 +65,11 @@ for s in ss:
         outstr += a + "\n"
         snum += 1
     except:
+        traceback.print_exc()
         print "============== error ================="
         print s0
         print "======================================"
-        open("error.txt", "a").write(s0 + "\n\n")
+        open("error.txt", "a").write("记账回执\n" + s0 + "\n\n")
         enum += 1
 
 open("output.txt", "w").write(outstr)
