@@ -57,7 +57,6 @@ for s in ss:
         a11 = a1[1].strip()
         a12 = a1[2].strip()
         a1 = a10 + a11.zfill(2) + a12.zfill(2)
-        a1 = a1[:-1] + "*"
         a = "%s ~ %s ~ 00000000 ~ %s ~ %s ~ %s ~ %s ~ %s ~ %s ~ %s ~ %s ~ 00" % (
             a1, a1, a2, a3, a4, a5, a6, a7, a8, a9
             )
